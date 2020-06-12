@@ -2,6 +2,7 @@ from stackapi import StackAPI
 from pprint import pprint
 from datetime import datetime, timedelta
 import gspread
+import sys
 
 today = datetime.now()
 start = today - timedelta(days=today.weekday()+1)
@@ -17,6 +18,15 @@ answers_ids = []
 row = 2
 week = start.strftime("%Y-%m-%d")
 print(week)
+
+if len(sys.argv) < 2:
+    print('Start date is not set. Default is start of the week: '+ week)
+else:
+    try:
+        datetime.datetime.strptime(sys.argv[1], '%Y-%m-%d')
+        week = sys.argv[1]
+    except ValueError:
+        raise ValueError("Incorrect data format, should be YYYY-MM-DD")
 
 #Initialize Google spreadsheet with service account. 
 #Credentails are stored in ~/.config/gspread/service_account.json
@@ -59,7 +69,7 @@ sf_platform_users = []
 tags = ['kubernetes', 'minikube', 'istio', 'gcp', 'k8s', 'gke', 'google-kubernetes-engine', 'google-cloud-firestore', 'google-cloud-platform', 'google-compute-engine', 'google-cloud-composer', 'google-data-studio', 'google-bigquery', 'google-app-engine', 'firebase', 'kubectl', 'airflow']
 
 print("Our answers for the current week:")
-#------ search for team answers on Stackoverflow for the current week--------
+#------ search for team answers on Stackoverflo for the current week--------
 SITE = StackAPI('stackoverflow')
 answers = SITE.fetch('users/{ids}/answers', ids=so_user_list)
 for ans in answers['items']:
