@@ -39,7 +39,7 @@ try:
     wks = sh.worksheet(week)
     sh.del_worksheet(wks)
     wks = sh.add_worksheet(title=week, rows="200", cols="20")
-    print('Spreadsheet ' + str(week) + 'cleared')
+    print('Spreadsheet ' + str(week) + ' cleared')
 except:
     wks = sh.add_worksheet(title=week, rows="200", cols="20")
     print ('Spreadsheet ' + str(week) + 'not found. Created new one')
@@ -50,7 +50,16 @@ wks.update_cell(1, 2, 'User')
 wks.update_cell(1, 3, 'Shard')
 wks.update_cell(1, 4, 'Is Accepted')
 wks.update_cell(1, 5, 'Score')
-wks.format('A1:F1', {'textFormat': {'bold': True}})
+wks.update_cell(1, 7, 'Last update')
+wks.update_cell(1, 8, 'Script is running...')
+wks.format("G1:H1", {
+    "backgroundColor": {
+      "red": 1.0,
+      "green": 0.2,
+      "blue": 0.4
+    }
+})
+wks.format('A1:H1', {'textFormat': {'bold': True}})
 
 
 so_user_list = [12857703, 7090016, 12153576, 12257134, 12767257, 12201084, 11977760, 1466573,12571387,11207414,11714114,11602913,11102471,9928809,12237732,11300382,12524159,12014434,11901958,12518487,10161306,3156333,11148139,12428794,11101419,12410332,10347794,12186585,9929015,9521610,12257250,11560878,10892354]
@@ -129,3 +138,17 @@ print("K8s:", cnt_k8s)
 print("Platform:", cnt_platform)
 print("Infra:", cnt_infra)
 print("Bigdata:", cnt_bigdata)
+
+wks.update_cell(3, 7, 'K8s')
+wks.update_cell(3, 8, str(cnt_k8s))
+
+wks.update_cell(4, 7, 'Platform')
+wks.update_cell(4, 8, str(cnt_platform))
+
+wks.update_cell(5, 7, 'Infra')
+wks.update_cell(5, 8, str(cnt_infra))
+
+wks.update_cell(6, 7, 'Bigdata')
+wks.update_cell(4, 7, str(cnt_bigdata))
+
+wks.update_cell(1, 8, str(today)) # set update time
