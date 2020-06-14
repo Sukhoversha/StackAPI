@@ -149,6 +149,6 @@ wks.update_cell(5, 7, 'Infra')
 wks.update_cell(5, 8, str(cnt_infra))
 
 wks.update_cell(6, 7, 'Bigdata')
-wks.update_cell(4, 7, str(cnt_bigdata))
+wks.update_cell(6, 8, str(cnt_bigdata))
 
 wks.update_cell(1, 8, str(today)) # set update time
