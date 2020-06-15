@@ -1,5 +1,4 @@
 from stackapi import StackAPI
-from pprint import pprint
 from datetime import datetime, timedelta
 import gspread
 import sys
@@ -23,17 +22,20 @@ if len(sys.argv) < 2:
 else:
     try:
         var_date = datetime.strptime(sys.argv[1], '%Y-%m-%d')
+        start = var_date
         fromdate = datetime.timestamp(var_date)
+        week = 'Custom date'
     except ValueError:
         raise ValueError("Incorrect data format, should be YYYY-MM-DD")
 
-#Initialize Google spreadsheet with service account. 
-#Credentails are stored in ~/.config/gspread/service_account.json
-#Instruction how to Enable API Access for a Project - 
-#https://gspread.readthedocs.io/en/latest/oauth2.html#enable-api-access-for-a-project
+# Initialize Google spreadsheet with service account.
+# Credentails are stored in ~/.config/gspread/service_account.json
+# Instruction how to Enable API Access for a Project -
+# https://gspread.readthedocs.io/en/latest/oauth2.html#enable-api-access-for-a-project
 gc = gspread.service_account()
 sh = gc.open('Weekly Stack results')
-#check if worksheet exists. If yes - remove and create a new one, otherwise just create a new one
+
+# check if worksheet exists. If yes - remove and create a new one, otherwise just create a new one
 try:
     wks = sh.worksheet(week)
     sh.del_worksheet(wks)
@@ -76,9 +78,9 @@ sf_platform_users = []
 
 tags = ['kubernetes', 'minikube', 'istio', 'gcp', 'k8s', 'gke', 'google-kubernetes-engine', 'google-cloud-firestore', 'google-cloud-platform', 'google-compute-engine', 'google-cloud-composer', 'google-data-studio', 'google-bigquery', 'google-app-engine', 'firebase', 'kubectl', 'airflow']
 
-print("Our answers for the current week:")
+print('List of answers for the date range ' + str(start) + ' - ' + str(today))
 
-#------ search for team answers on Stackoverflo for the current week--------
+# ------ search for team answers on Stackoverflo for the current week--------
 SITE = StackAPI('stackoverflow')
 answers = SITE.fetch('users/{ids}/answers', ids=so_user_list)
 for ans in answers['items']:
@@ -102,7 +104,7 @@ for ans in answers['items']:
             cnt_bigdata = cnt_bigdata + 1
             wks.update_cell(row, 3, 'Bigdata')
         row = row + 1
-#-------Check if questions contain supported tags-----
+# -------Check if questions contain supported tags-----
 # question = SITE.fetch('questions/{ids}', ids=question_ids)
 # for q in question['items']:
 #     for t in q['tags']:
@@ -110,7 +112,7 @@ for ans in answers['items']:
 #             print("ID to remove:",q['question_id'])
 #             question_ids.remove(q['question_id'])
 
-#------ search for team answers on Serferfault for the current week--------
+# ------ search for team answers on Serferfault for the current week--------
 SITE = StackAPI('serverfault')
 answers = SITE.fetch('users/{ids}/answers', ids=sf_user_list)
 for ans in answers['items']:    
