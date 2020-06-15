@@ -17,14 +17,13 @@ question_ids = []
 answers_ids = []
 row = 2
 week = start.strftime("%Y-%m-%d")
-print(week)
 
 if len(sys.argv) < 2:
     print('Start date is not set. Default is start of the week: '+ week)
 else:
     try:
-        datetime.datetime.strptime(sys.argv[1], '%Y-%m-%d')
-        week = sys.argv[1]
+        var_date = datetime.strptime(sys.argv[1], '%Y-%m-%d')
+        fromdate = datetime.timestamp(var_date)
     except ValueError:
         raise ValueError("Incorrect data format, should be YYYY-MM-DD")
 
@@ -42,7 +41,7 @@ try:
     print('Spreadsheet ' + str(week) + ' cleared')
 except:
     wks = sh.add_worksheet(title=week, rows="200", cols="20")
-    print ('Spreadsheet ' + str(week) + 'not found. Created new one')
+    print ('Spreadsheet ' + str(week) + ' not found. Created a new one')
 
 # Set header
 wks.update_cell(1, 1, 'Link')
@@ -78,6 +77,7 @@ sf_platform_users = []
 tags = ['kubernetes', 'minikube', 'istio', 'gcp', 'k8s', 'gke', 'google-kubernetes-engine', 'google-cloud-firestore', 'google-cloud-platform', 'google-compute-engine', 'google-cloud-composer', 'google-data-studio', 'google-bigquery', 'google-app-engine', 'firebase', 'kubectl', 'airflow']
 
 print("Our answers for the current week:")
+
 #------ search for team answers on Stackoverflo for the current week--------
 SITE = StackAPI('stackoverflow')
 answers = SITE.fetch('users/{ids}/answers', ids=so_user_list)
