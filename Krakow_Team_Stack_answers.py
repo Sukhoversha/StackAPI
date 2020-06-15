@@ -13,7 +13,7 @@ cnt_infra = 0
 cnt_platform = 0
 cnt_bigdata = 0
 question_ids = []
-answers_ids = []
+valid_q = []
 row = 2
 week = start.strftime("%Y-%m-%d")
 
@@ -80,11 +80,28 @@ tags = ['kubernetes', 'minikube', 'istio', 'gcp', 'k8s', 'gke', 'google-kubernet
 
 print('List of answers for the date range ' + str(start) + ' - ' + str(today))
 
-# ------ search for team answers on Stackoverflo for the current week--------
+
+# Get all Stackoverflow answers for the date
 SITE = StackAPI('stackoverflow')
 answers = SITE.fetch('users/{ids}/answers', ids=so_user_list)
 for ans in answers['items']:
     if (ans['creation_date']) > fromdate:
+        question_ids.append(ans['question_id'])
+
+# Creat a list of questions with supported tags-----
+if len(question_ids) > 0:
+    question = SITE.fetch('questions/{ids}', ids=question_ids)
+    for q in question['items']:
+        for t in q['tags']:
+                if t in tags:
+                    valid_q.append(q['question_id'])
+                    break
+else:
+    print('No answers found on Stackoverflow')
+
+# Export to Sheets
+for ans in answers['items']:
+    if ans['question_id'] in valid_q:
         print("https://stackoverflow.com/questions/" + str(ans['answer_id']).lstrip()+" :"+ans['owner']['display_name']+str(ans['score']))
         # Insert results into spreadsheet
         wks.update_cell(row, 1, "https://stackoverflow.com/questions/" + str(ans['answer_id']))
@@ -104,21 +121,31 @@ for ans in answers['items']:
             cnt_bigdata = cnt_bigdata + 1
             wks.update_cell(row, 3, 'Bigdata')
         row = row + 1
-# -------Check if questions contain supported tags-----
-# question = SITE.fetch('questions/{ids}', ids=question_ids)
-# for q in question['items']:
-#     for t in q['tags']:
-#         if t in tags:
-#             print("ID to remove:",q['question_id'])
-#             question_ids.remove(q['question_id'])
 
-# ------ search for team answers on Serferfault for the current week--------
+
+# Get all Serverfault answers for the date
+question_ids = []
+valid_q = []
 SITE = StackAPI('serverfault')
 answers = SITE.fetch('users/{ids}/answers', ids=sf_user_list)
-for ans in answers['items']:    
+for ans in answers['items']:
     if (ans['creation_date']) > fromdate:
+        question_ids.append(ans['question_id'])
+
+# Creat a list of questions with supported tags-----
+if len(question_ids) > 0:
+    question = SITE.fetch('questions/{ids}', ids=question_ids)
+    for q in question['items']:
+        for t in q['tags']:
+                if t in tags:
+                    valid_q.append(q['question_id'])
+                    break
+else:
+    print('No answers found on Serverfault')
+
+for ans in answers['items']:
+    if ans['question_id'] in valid_q:
         print("https://serverfault.com/questions/" + str(ans['answer_id']).lstrip()+" :"+ans['owner']['display_name'])
-        # Insert results into spreadsheet
         wks.update_cell(row, 1, "https://serverfault.com/questions/" + str(ans['answer_id']))
         wks.update_cell(row, 2, ans['owner']['display_name'])
         wks.update_cell(row, 4, ans['is_accepted'])
