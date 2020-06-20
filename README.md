@@ -1,4 +1,3 @@
 # StackAPI
-Requires stackapi module installation
-
+Requires stackapi module 
 pip3 install stackapi
